@@ -10,7 +10,7 @@ module.exports = async (job) => {
     await job.updateProgress('Hello');
 
     var proxID = await shell.exec(`pvesh get /cluster/nextid`);
-    console.log('p', proxID);
+    console.log('p', proxID, proxID.stdout);
 
     if (proxID.code != 0) throw new Error(`${proxID.stderr}`);
 
