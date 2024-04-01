@@ -11,6 +11,7 @@ module.exports = async (job) => {
     await job.updateProgress('step 1');
 
     data.proxID = 500;
+    data.ok = true;
 
     return data;
 };
