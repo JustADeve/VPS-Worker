@@ -20,7 +20,34 @@ module.exports = async (job) => {
 
     var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst'));
 
-    console.log('vps', vpsCreateRes);
+    if (vpsCreateRes.stderr.length > 0) throw new Error(`${vpsCreateRes.stderr}`);
+
+    await job.updateProgress('Empty vps created');
+
+    await shell.exec(`cp /etc/pve/firewall/100.fw /etc/pve/firewall/${proxID}.fw`);
+
+    await job.updateProgress('Added firewall rules.');
+
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
+
+    await job.updateProgress('SSH enabled');
+
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tFree VPS by BasementHost' > /etc/motd"`);
+
+    await job.updateProgress('Motd clear');
+
+    const fs = require('fs');
+
+    // echo "iptables -t nat -A PREROUTING -p TCP --dport 3$(echo $ID)0 -j DNAT --to-destination $(echo $IP):22" >> $PN
+    fs.writeFileSync(`/port/${data.portID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${sshPort} -j DNAT --to-destination ${ip}:22`);
+
+    await shell.exec(`bash /port/${data.portID}.sh`);
+
+    await job.updateProgress('Port forwarded!');
+
+    await shell.exec('pct reboot ' + proxID);
+
+    await job.updateProgress('VPS restarted!');
 
     data.proxID = proxID;
     data.ok = true;
