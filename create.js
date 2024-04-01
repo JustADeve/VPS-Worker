@@ -12,6 +12,8 @@ module.exports = async (job) => {
     var proxID = await shell.exec(`pvesh get /cluster/nextid`);
     console.log('p', proxID);
 
+    if (proxID.code != 0) throw new Error(`${proxID.stderr}`);
+
     data.proxID = 500;
     data.ok = true;
 
