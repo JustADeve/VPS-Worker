@@ -5,4 +5,8 @@ module.exports = async (job) => {
     var id = job.id;
 
     console.log(`Creating ${id} with ${password} @ ${ip} -p ${sshPort}`);
+
+    return {
+        proxID: 300
+    }
 };

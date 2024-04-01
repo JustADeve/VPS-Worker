@@ -20,6 +20,7 @@ const worker = new BullMQ.Worker(
             username: REDIS_USERNAME,
             password: REDIS_PASSWORD,
             port: REDIS_PORT
-        }
+        },
+        concurrency: 1
     }
 );
