@@ -8,7 +8,14 @@ module.exports = async (job) => {
 
     console.log(`Creating ${id} with ${password} @ ${ip} -p ${sshPort}`);
 
-    await sleep(30*1000);
+    await sleep(3*1000);
+    await job.updateProgress('step 1');
+
+    await sleep(3*1000);
+    await job.updateProgress('step 2');
+
+    await sleep(5*1000);
+    await job.updateProgress('step 3');
 
     console.log('Created!');
 
