@@ -11,6 +11,18 @@ async function addForward(ID, int, ext, ip) {
     return a;
 }
 
+async function removeForward(ID, int, ext, ip) {
+    console.log(`Removing ${ID} - :${ext} -> ${ip}:${int}`);
+    // echo "iptables -t nat -A PREROUTING -p TCP --dport 3$(echo $ID)0 -j DNAT --to-destination $(echo $IP):22" >> $PN
+    // fs.writeFileSync(`/port/${ID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${ext} -j DNAT --to-destination ${ip}:${int}`);
+
+    fs.unlinkSync(`/port/${ID}.sh`);
+    var a = await shell.exec(`iptables -t nat -D PREROUTING -p TCP --dport ${ext} -j DNAT --to-destination ${ip}:${int}`);
+    console.log('a', a);
+    return a;
+}
+
 module.exports = {
-    addForward
+    addForward,
+    removeForward
 }
