@@ -26,7 +26,7 @@ module.exports = async (job) => {
             break;
         case "restart":
             var id = data.proxID;
-            await shell.exec(`pct restart ${id}`);
+            await shell.exec(`pct reboot ${id}`);
             break;
         default:
             returnData.ok = false;
