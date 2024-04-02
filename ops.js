@@ -28,6 +28,23 @@ module.exports = async (job) => {
             var id = data.proxID;
             await shell.exec(`pct reboot ${id}`);
             break;
+        case "forward":
+            /* {
+                action: 'forward',
+                proxID: VPS.proxID,
+                ip: VPS.ip,
+                port: sshPort.port,
+                intPort: port,
+                userID: interaction.user.id
+            }  */
+            var id = data.proxID;
+            var extPort = data.port;
+            var pID = data.portID;
+            var ip = data.ip;
+            var intPort = data.intPort;
+
+            await lib.addForward(pID, intPort, extPort, ip);
+            break;
         default:
             returnData.ok = false;
             returnData.error = 'invalid action';

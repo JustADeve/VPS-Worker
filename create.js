@@ -1,5 +1,6 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const shell = require('shelljs');
+const lib = require('./lib');
 
 module.exports = async (job) => {
     var data = job.data;
@@ -38,13 +39,8 @@ module.exports = async (job) => {
 
     await job.updateProgress('Motd clear');
 
-    const fs = require('fs');
 
-    // echo "iptables -t nat -A PREROUTING -p TCP --dport 3$(echo $ID)0 -j DNAT --to-destination $(echo $IP):22" >> $PN
-    fs.writeFileSync(`/port/${data.portID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${data.sshPort} -j DNAT --to-destination ${data.ip}:22`);
-
-    var a = await shell.exec(`bash /port/${data.portID}.sh`);
-    console.log('a', a);
+    await lib.addForward(data.portID, 22, sshPort, data.ip);
 
     await job.updateProgress('Port forwarded!');
 
