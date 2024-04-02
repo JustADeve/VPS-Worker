@@ -1,4 +1,5 @@
 const shell = require('shelljs');
+const lib = require('./lib');
 
 module.exports = async (job) => {
 
