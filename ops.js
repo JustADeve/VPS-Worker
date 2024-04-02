@@ -11,7 +11,7 @@ module.exports = async (job) => {
 
     if (!data.action) throw new Error('No action');
 
-    switch (action) {
+    switch (data.action) {
         case "start":
             var id = data.proxID;
             await shell.exec(`pct start ${id}`);
