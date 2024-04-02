@@ -63,6 +63,11 @@ module.exports = async (job) => {
 
             await lib.removeForward(pID, intPort, extPort, ip);
             break;
+        case "delete":
+            var id = data.proxID;
+            await shell.exec(`pct stop ${id}`);
+            await shell.exec(`pct destroy ${id}`);
+            break;
         default:
             returnData.ok = false;
             returnData.error = 'invalid action';
