@@ -22,11 +22,11 @@ module.exports = async (job) => {
 
     if (vpsCreateRes.stderr.length > 0) throw new Error(`${vpsCreateRes.stderr}`);
 
-    await shell.exec('pct start ' + proxID);
+    console.log((await shell.exec('pct start ' + proxID)).stderr);
 
     await job.updateProgress('Empty vps created');
 
-    await shell.exec(`cp /etc/pve/firewall/100.fw /etc/pve/firewall/${proxID}.fw`);
+    console.log((await shell.exec(`cp /etc/pve/firewall/100.fw /etc/pve/firewall/${proxID}.fw`)).stderr);
 
     await job.updateProgress('Added firewall rules.');
 
