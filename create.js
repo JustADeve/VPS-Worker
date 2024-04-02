@@ -41,7 +41,7 @@ module.exports = async (job) => {
     const fs = require('fs');
 
     // echo "iptables -t nat -A PREROUTING -p TCP --dport 3$(echo $ID)0 -j DNAT --to-destination $(echo $IP):22" >> $PN
-    fs.writeFileSync(`/port/${data.portID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${data.sshPort} -j DNAT --to-destination ${ip}:22`);
+    fs.writeFileSync(`/port/${data.portID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${data.sshPort} -j DNAT --to-destination ${data.ip}:22`);
 
     var a = await shell.exec(`bash /port/${data.portID}.sh`);
     console.log('a', a);
