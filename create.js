@@ -20,9 +20,9 @@ module.exports = async (job) => {
 
     var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst'));
 
-    if (vpsCreateRes.stderr.length > 0) throw new Error(`${vpsCreateRes.stderr}`);
+    if (vpsCreateRes.stderr.length > 0) throw new Error(`Error: ${vpsCreateRes.stderr}`);
 
-    console.log((await shell.exec('pct start ' + proxID)).stderr);
+    // console.log((await shell.exec('pct start ' + proxID)).stderr);
 
     await job.updateProgress('Empty vps created');
 
@@ -43,7 +43,8 @@ module.exports = async (job) => {
     // echo "iptables -t nat -A PREROUTING -p TCP --dport 3$(echo $ID)0 -j DNAT --to-destination $(echo $IP):22" >> $PN
     fs.writeFileSync(`/port/${data.portID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${sshPort} -j DNAT --to-destination ${ip}:22`);
 
-    await shell.exec(`bash /port/${data.portID}.sh`);
+    var a = await shell.exec(`bash /port/${data.portID}.sh`);
+    console.log('a', a);
 
     await job.updateProgress('Port forwarded!');
 
@@ -68,12 +69,12 @@ function getCreateCMD(id, ip, password, path) {
 
     cmd += ` ${path} `
     cmd += `--hostname=vps${id} `;
-    cmd += `--swap=4096 `;
+    cmd += `--swap=512 `;
     cmd += `--memory=2048 `;
     cmd += `--cmode=shell `;
     cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=${ip}/17,rate=3 `;
     cmd += `--ostype=debian `;
-    cmd += `--password ${password}`;
+    cmd += `--password ${password} `;
     cmd += `--start=1 `;
     cmd += `--unprivileged=1 `;
     cmd += `--cores=1 `;
