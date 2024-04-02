@@ -5,9 +5,9 @@ module.exports = async (job) => {
     var data = job.data;
 
     var returnData;
-    returnData = {
-        ok: true
-    };
+    returnData = data;
+
+    returnData.ok = true;
 
     if (!data.action) throw new Error('No action');
 
@@ -34,5 +34,4 @@ module.exports = async (job) => {
     }
 
     return returnData;
-
 };
