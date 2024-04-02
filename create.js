@@ -40,7 +40,7 @@ module.exports = async (job) => {
     await job.updateProgress('Motd clear');
 
 
-    await lib.addForward(data.portID, 22, sshPort, data.ip);
+    await lib.addForward(data.portID, 22, data.sshPort, data.ip);
 
     await job.updateProgress('Port forwarded!');
 
