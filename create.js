@@ -21,6 +21,8 @@ module.exports = async (job) => {
 
     var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst', data.storage));
 
+    console.log(vpsCreateRes);
+
     if (vpsCreateRes.stderr.length > 0) throw new Error(`Error: ${vpsCreateRes.stderr}`);
 
     // console.log((await shell.exec('pct start ' + proxID)).stderr);
@@ -47,6 +49,14 @@ module.exports = async (job) => {
     await shell.exec('pct reboot ' + proxID);
 
     await job.updateProgress('VPS restarted!');
+
+    try {
+    await shell.exec('pct exec ' + proxID + ' -- apt update -y && apt install sudo curl wget -y');
+    } catch(e) {
+        console.log('failed to update package', String(e))
+    }
+
+    await job.updateProgress('Packages updated!');
 
     data.proxID = proxID;
     data.ok = true;
