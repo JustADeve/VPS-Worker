@@ -78,7 +78,7 @@ function getCreateCMD(id, ip, password, path, storage) {
     cmd += `--swap=512 `;
     cmd += `--memory=2048 `;
     cmd += `--cmode=shell `;
-    cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=${ip}/17,rate=3 `;
+    cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=${ip}/16,rate=3 `;
     cmd += `--ostype=debian `;
     cmd += `--password ${password} `;
     cmd += `--start=1 `;
