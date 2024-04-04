@@ -19,7 +19,7 @@ module.exports = async (job) => {
 
     await job.updateProgress(`Got proxmox ID: ${proxID}`);
 
-    var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst'));
+    var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst', data.storage));
 
     if (vpsCreateRes.stderr.length > 0) throw new Error(`Error: ${vpsCreateRes.stderr}`);
 
@@ -54,7 +54,7 @@ module.exports = async (job) => {
     return data;
 };
 
-function getCreateCMD(id, ip, password, path) {
+function getCreateCMD(id, ip, password, path, storage) {
     // pct create $ID /var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst --hostname=vps$ID --swap=4096 --memory=1024 --cmode=shell
     // --net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=$IP/16,rate=3 --ostype=debian --password $PASSWORD --start=1 --unprivileged=1 --cores=1
     // --features fuse=1,nesting=1,keyctl=1
@@ -74,7 +74,8 @@ function getCreateCMD(id, ip, password, path) {
     cmd += `--start=1 `;
     cmd += `--unprivileged=1 `;
     cmd += `--cores=1 `;
-    cmd += `--features fuse=1,nesting=1,keyctl=1`;
+    cmd += `--features fuse=1,nesting=1,keyctl=1 `;
+    cmd += `--rootfs ${storage}:5`;
 
     return cmd;
 }
