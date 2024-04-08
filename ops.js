@@ -65,6 +65,7 @@ module.exports = async (job) => {
             break;
         case "delete":
             var id = data.proxID;
+            console.log(`> Deleting ${id}`);
             await shell.exec(`pct stop ${id}`);
             await shell.exec(`pct destroy ${id}`);
             break;

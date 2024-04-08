@@ -11,7 +11,7 @@ module.exports = async (job) => {
     await job.updateProgress('Hello');
 
     var proxID = await shell.exec(`pvesh get /cluster/nextid`);
-    console.log('p', proxID, proxID.stdout);
+    // console.log('p', proxID, proxID.stdout);
     if (proxID.code != 0) throw new Error(`${proxID.stderr}`);
 
     proxID = String(proxID.stdout).replace('\n', '');
@@ -21,7 +21,7 @@ module.exports = async (job) => {
 
     var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst', data.storage, data));
 
-    console.log(vpsCreateRes);
+    // console.log(vpsCreateRes);
 
     if (vpsCreateRes.stderr.length > 0) throw new Error(`Error: ${vpsCreateRes.stderr}`);
 

@@ -7,7 +7,7 @@ async function addForward(ID, int, ext, ip) {
     fs.writeFileSync(`/port/${ID}.sh`, `iptables -t nat -A PREROUTING -p TCP --dport ${ext} -j DNAT --to-destination ${ip}:${int}`);
 
     var a = await shell.exec(`bash /port/${ID}.sh`);
-    console.log('a', a);
+    // console.log('a', a);
     return a;
 }
 
@@ -18,7 +18,7 @@ async function removeForward(ID, int, ext, ip) {
 
     fs.unlinkSync(`/port/${ID}.sh`);
     var a = await shell.exec(`iptables -t nat -D PREROUTING -p TCP --dport ${ext} -j DNAT --to-destination ${ip}:${int}`);
-    console.log('a', a);
+    // console.log('a', a);
     return a;
 }
 
