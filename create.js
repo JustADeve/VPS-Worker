@@ -19,7 +19,7 @@ module.exports = async (job) => {
 
     await job.updateProgress(`Got proxmox ID: ${proxID}`);
 
-    var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst', data.storage));
+    var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst', data.storage, data));
 
     console.log(vpsCreateRes);
 
@@ -64,7 +64,7 @@ module.exports = async (job) => {
     return data;
 };
 
-function getCreateCMD(id, ip, password, path, storage) {
+function getCreateCMD(id, ip, password, path, storage, data) {
     // pct create $ID /var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst --hostname=vps$ID --swap=4096 --memory=1024 --cmode=shell
     // --net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=$IP/16,rate=3 --ostype=debian --password $PASSWORD --start=1 --unprivileged=1 --cores=1
     // --features fuse=1,nesting=1,keyctl=1
@@ -74,9 +74,14 @@ function getCreateCMD(id, ip, password, path, storage) {
     cmd += id;
 
     cmd += ` ${path} `
-    cmd += `--hostname=vps${id} `;
-    cmd += `--swap=512 `;
-    cmd += `--memory=2048 `;
+    cmd += `--swap=256 `;
+    if (data.type == 'normal') {
+        cmd += `--hostname=vps${id} `;
+        cmd += `--memory=2048 `;
+    } else {
+        cmd += `--hostname=test${id} `;
+        cmd += `--memory=4096 `;
+    }
     cmd += `--cmode=shell `;
     cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=${ip}/16,rate=3 `;
     cmd += `--ostype=debian `;
