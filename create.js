@@ -74,7 +74,7 @@ function getCreateCMD(id, ip, password, path, storage, data) {
     cmd += id;
 
     cmd += ` ${path} `
-    cmd += `--swap=256 `;
+    cmd += `--swap=512 `;
     cmd += `--hostname=vps${id} `;
     cmd += `--memory=4096 `;
     cmd += `--cmode=shell `;
@@ -85,7 +85,7 @@ function getCreateCMD(id, ip, password, path, storage, data) {
     cmd += `--unprivileged=1 `;
     cmd += `--cores=1 `;
     cmd += `--features fuse=1,nesting=1,keyctl=1 `;
-    cmd += `--rootfs ${storage}:5`;
+    cmd += `--rootfs ${storage}:10`;
 
     return cmd;
 }
