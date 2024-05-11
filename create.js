@@ -19,7 +19,7 @@ module.exports = async (job) => {
 
     await job.updateProgress(`Got proxmox ID: ${proxID}`);
 
-    var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst', data.storage, data));
+    var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/alpine-3.19-default_20240207_amd64.tar.xz', data.storage, data));
 
     // console.log(vpsCreateRes);
 
@@ -33,14 +33,17 @@ module.exports = async (job) => {
 
     await job.updateProgress('Added firewall rules.');
 
+    await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "apk add openssh zsh git wget curl htop sudo bash"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
 
-    await job.updateProgress('SSH enabled');
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tFree VPS by ErtixNodes.' > /etc/motd"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo '\t' >> /etc/motd"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tPackage manager: apk' >> /etc/motd"`);
 
-    await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tFree VPS by BasementHost' > /etc/motd"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "bash <(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`);
 
     await job.updateProgress('Motd clear');
-
 
     await lib.addForward(data.portID, 22, data.sshPort, data.ip);
 
@@ -49,14 +52,6 @@ module.exports = async (job) => {
     await shell.exec('pct reboot ' + proxID);
 
     await job.updateProgress('VPS restarted!');
-
-    try {
-    await shell.exec('pct exec ' + proxID + ' -- apt update -y && apt install sudo curl wget -y');
-    } catch(e) {
-        console.log('failed to update package', String(e))
-    }
-
-    await job.updateProgress('Packages updated!');
 
     data.proxID = proxID;
     data.ok = true;
@@ -79,7 +74,7 @@ function getCreateCMD(id, ip, password, path, storage, data) {
     cmd += `--memory=4096 `;
     cmd += `--cmode=shell `;
     cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=${ip}/16,rate=3 `;
-    cmd += `--ostype=debian `;
+    cmd += `--ostype=alpine `;
     cmd += `--password ${password} `;
     cmd += `--start=1 `;
     cmd += `--unprivileged=1 `;
