@@ -33,6 +33,9 @@ module.exports = async (job) => {
 
     await job.updateProgress('Added firewall rules.');
 
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo 'http://mirror.ertixnodes.xyz/alpine/v3.19/main' > /etc/apk/repositories"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo 'http://mirror.ertixnodes.xyz/alpine/v3.19/community' >> /etc/apk/repositories"`);
+
     await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "apk add openssh zsh git wget curl htop sudo bash"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
