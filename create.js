@@ -36,6 +36,8 @@ module.exports = async (job) => {
     await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "apk add openssh zsh git wget curl htop sudo bash"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
+    // rc-update add sshd
+     await shell.exec(`pct exec ${proxID} sh -- -c "rc-update add sshd"`);
 
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tFree VPS by ErtixNodes.' > /etc/motd"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\t' >> /etc/motd"`);
