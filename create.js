@@ -49,8 +49,9 @@ module.exports = async (job) => {
     await shell.exec(`pct exec ${proxID} sh -- -c "bash <(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`);
 
     await shell.exec(`pct exec ${proxID} sh -- -c "sed -i 's#/bin/ash#/bin/zsh#' /etc/passwd"`);
-
-    await job.updateProgress('Motd clear');
+    
+    await shell.exec(`pct exec ${proxID} sh -- -c "wget https://raw.githubusercontent.com/ErtixNodes/Scripts/main/apt -O /bin/apt"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "chmod 777 /bin/apt"`);
 
     await lib.addForward(data.portID, 22, data.sshPort, data.ip);
 
