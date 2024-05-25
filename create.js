@@ -81,7 +81,7 @@ function getCreateCMD(id, ip, password, path, storage, data) {
     cmd += `--hostname=alpine${id} `;
     cmd += `--memory=4096 `;
     cmd += `--cmode=shell `;
-    cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=${ip}/16,rate=3 `;
+    cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=${data.subnet},ip=${ip}/16,rate=3 `;
     cmd += `--ostype=alpine `;
     cmd += `--password ${password} `;
     cmd += `--start=1 `;
