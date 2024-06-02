@@ -45,6 +45,7 @@ module.exports = async (job) => {
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tFree VPS by ErtixNodes.' > /etc/motd"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\t' >> /etc/motd"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tPackage manager: apk' >> /etc/motd"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tYour vps ID: ${data.shortID}' >> /etc/motd"`);
 
     await shell.exec(`pct exec ${proxID} sh -- -c "bash <(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`);
 
@@ -78,7 +79,7 @@ function getCreateCMD(id, ip, password, path, storage, data) {
 
     cmd += ` ${path} `
     cmd += `--swap=256 `;
-    cmd += `--hostname=alpine${id} `;
+    cmd += `--hostname=alpine${id}-${data.shortID} `;
     cmd += `--memory=1024 `;
     cmd += `--cmode=shell `;
     cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=${data.subnet},ip=${ip}/16,rate=3 `;
