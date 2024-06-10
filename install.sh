@@ -29,4 +29,4 @@ mkdir /data
 
 apt install btrfs-progs -y
 
-incus storage create vps btrfs source=/data
+incus storage create vps btrfs
