@@ -65,8 +65,8 @@ function getCreateCMD(data) {
     var name = `vps_${data.userID}_${data.shortID}`;
     var cmd = {};
     cmd.create = `incus launch images:alpine/3.19 ${name} -c limits.memory=1GB -c limits.cpu=1 -c limits.cpu.allowance=25% -c limits.processes=100 --storage vps`;
-    cmd.storage = `incus config device override ${name} root size=10GiB`
-    cmd.network = `incusi config device override ${name} eth0 limits.max=10Mbit`;
+    cmd.storage = `incus config device set ${name} root size=10GB`
+    cmd.network = `incus config device override ${name} eth0 limits.max=10Mbit`;
 
     return cmd;
 }
