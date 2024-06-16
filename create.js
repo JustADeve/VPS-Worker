@@ -89,7 +89,7 @@ function getCreateCMD(id, ip, password, path, storage, data) {
     cmd += `--unprivileged=1 `;
     cmd += `--cores=1 `;
     cmd += `--features fuse=1,nesting=1,keyctl=1 `;
-    cmd += `--rootfs ${storage}:10`;
+    cmd += `--rootfs ${storage}:5`;
 
     return cmd;
 }
