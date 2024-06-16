@@ -35,28 +35,40 @@ module.exports = async (job) => {
 
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'http://mirror.ertixnodes.xyz/alpine/v3.19/main' > /etc/apk/repositories"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'http://mirror.ertixnodes.xyz/alpine/v3.19/community' >> /etc/apk/repositories"`);
+    await job.updateProgress('Added custom mirror');
+
+    await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "apk add wget"`);
+    await job.updateProgress('Download wget');
 
     // Add custom ertixnodes repo :D
     await shell.exec(`pct exec ${proxID} sh -- -c "wget -P /etc/apk/keys https://ertixnodes.github.io/pkg/info@bastothemax.nl-666178c1.rsa.pub"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'https://ertixnodes.github.io/pkg/repo' >> /etc/apk/repositories`);
+    await job.updateProgress('Added custom repo');
 
     await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "apk add openssh zsh git wget curl htop sudo bash htop neofetch"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
     // sed -i 's#/bin/ash#/bin/zsh#' /etc/passwd
      await shell.exec(`pct exec ${proxID} sh -- -c "rc-update add sshd"`);
+    await job.updateProgress('Allow ssh');
 
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tFree VPS by ErtixNodes.' > /etc/motd"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\t' >> /etc/motd"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tPackage manager: apk' >> /etc/motd"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo '\tYour vps ID: ${data.shortID}' >> /etc/motd"`);
 
+    await job.updateProgress('Motd');
+
     await shell.exec(`pct exec ${proxID} sh -- -c "bash <(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`);
+    await job.updateProgress('Oh my zsh');
 
     await shell.exec(`pct exec ${proxID} sh -- -c "sed -i 's#/bin/ash#/bin/zsh#' /etc/passwd"`);
     
     await shell.exec(`pct exec ${proxID} sh -- -c "wget https://raw.githubusercontent.com/ErtixNodes/Scripts/main/apt -O /bin/apt"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "chmod 777 /bin/apt"`);
+
+    await job.updateProgress('Add apt');
 
     await lib.addForward(data.portID, 22, data.sshPort, data.ip);
 
