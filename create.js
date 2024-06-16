@@ -10,6 +10,14 @@ module.exports = async (job) => {
 
     await job.updateProgress('Hello');
 
+    var proxID = await shell.exec(`pvesh get /cluster/nextid`);
+    // console.log('p', proxID, proxID.stdout);
+    if (proxID.code != 0) throw new Error(`${proxID.stderr}`);
+
+    proxID = String(proxID.stdout).replace('\n', '');
+    proxID = parseInt(proxID);
+
+    await job.updateProgress(`Got proxmox ID: ${proxID}`);
 
     var vpsCreateRes = await shell.exec(getCreateCMD(proxID, data.ip, data.password, '/var/lib/vz/template/cache/alpine-3.19-default_20240207_amd64.tar.xz', data.storage, data));
 
@@ -60,13 +68,28 @@ module.exports = async (job) => {
     return data;
 };
 
-function getCreateCMD(data) {
-    // incus config device override ubuntu-vm root size=30GiB
-    var name = `vps_${data.userID}_${data.shortID}`;
-    var cmd = {};
-    cmd.create = `incus launch images:alpine/3.19 ${name} -c limits.memory=1GB -c limits.cpu=1 -c limits.cpu.allowance=25% -c limits.processes=100 --storage vps`;
-    cmd.storage = `incus config device set ${name} root size=10GB`
-    cmd.network = `incus config device override ${name} eth0 limits.max=10Mbit`;
+function getCreateCMD(id, ip, password, path, storage, data) {
+    // pct create $ID /var/lib/vz/template/cache/debian-12-standard_12.2-1_amd64.tar.zst --hostname=vps$ID --swap=4096 --memory=1024 --cmode=shell
+    // --net0 name=eth0,bridge=vmbr0,firewall=1,gw=10.5.0.1,ip=$IP/16,rate=3 --ostype=debian --password $PASSWORD --start=1 --unprivileged=1 --cores=1
+    // --features fuse=1,nesting=1,keyctl=1
+
+    var cmd = '';
+    cmd += 'pct create ';
+    cmd += id;
+
+    cmd += ` ${path} `
+    cmd += `--swap=256 `;
+    cmd += `--hostname=alpine${id}-${data.shortID} `;
+    cmd += `--memory=1024 `;
+    cmd += `--cmode=shell `;
+    cmd += `--net0 name=eth0,bridge=vmbr0,firewall=1,gw=${data.subnet},ip=${ip}/16,rate=3 `;
+    cmd += `--ostype=alpine `;
+    cmd += `--password ${password} `;
+    cmd += `--start=1 `;
+    cmd += `--unprivileged=1 `;
+    cmd += `--cores=1 `;
+    cmd += `--features fuse=1,nesting=1,keyctl=1 `;
+    cmd += `--rootfs ${storage}:10`;
 
     return cmd;
 }
