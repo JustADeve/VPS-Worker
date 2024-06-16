@@ -42,8 +42,8 @@ module.exports = async (job) => {
     await job.updateProgress('Download wget');
 
     // Add custom ertixnodes repo :D
-    await shell.exec(`pct exec ${proxID} sh -- -c "wget -P /etc/apk/keys https://ertixnodes.github.io/pkg/info@bastothemax.nl-666178c1.rsa.pub"`);
-    await shell.exec(`pct exec ${proxID} sh -- -c "echo 'https://ertixnodes.github.io/pkg/repo' >> /etc/apk/repositories`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "wget https://raw.githubusercontent.com/ErtixNodes/pkg/feat-ci/setup.sh -O /pkg.sh"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "sh /pkg.sh`);
     await job.updateProgress('Added custom repo');
 
     await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
