@@ -36,6 +36,10 @@ module.exports = async (job) => {
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'http://mirror.ertixnodes.xyz/alpine/v3.19/main' > /etc/apk/repositories"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'http://mirror.ertixnodes.xyz/alpine/v3.19/community' >> /etc/apk/repositories"`);
 
+    // Add custom ertixnodes repo :D
+    await shell.exec(`pct exec ${proxID} sh -- -c "wget -P /etc/apk/keys https://ertixnodes.github.io/pkg/info@bastothemax.nl-666178c1.rsa.pub"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "echo 'https://ertixnodes.github.io/pkg/repo' >> /etc/apk/repositories`);
+
     await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "apk add openssh zsh git wget curl htop sudo bash htop neofetch"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
