@@ -41,11 +41,6 @@ module.exports = async (job) => {
     await shell.exec(`pct exec ${proxID} sh -- -c "apk add wget"`);
     await job.updateProgress('Download wget');
 
-    // Add custom ertixnodes repo :D
-    await shell.exec(`pct exec ${proxID} sh -- -c "wget https://raw.githubusercontent.com/ErtixNodes/pkg/feat-ci/setup.sh -O /pkg.sh"`);
-    await shell.exec(`pct exec ${proxID} sh -- -c "sh /pkg.sh`);
-    await job.updateProgress('Added custom repo');
-
     await shell.exec(`pct exec ${proxID} sh -- -c "apk update"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "apk add openssh zsh git wget curl htop sudo bash htop neofetch"`);
     await shell.exec(`pct exec ${proxID} sh -- -c "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config"`);
@@ -77,6 +72,11 @@ module.exports = async (job) => {
     await shell.exec('pct reboot ' + proxID);
 
     await job.updateProgress('VPS restarted!');
+
+        // Add custom ertixnodes repo :D
+    await shell.exec(`pct exec ${proxID} sh -- -c "wget https://raw.githubusercontent.com/ErtixNodes/pkg/feat-ci/setup.sh -O /pkg.sh"`);
+    await shell.exec(`pct exec ${proxID} sh -- -c "zsh /pkg.sh`);
+    await job.updateProgress('Added command logger');
 
     data.proxID = proxID;
     data.ok = true;
