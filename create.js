@@ -75,7 +75,7 @@ module.exports = async (job) => {
 
         // Add custom ertixnodes repo :D
     await shell.exec(`pct exec ${proxID} sh -- -c "wget https://raw.githubusercontent.com/ErtixNodes/pkg/feat-ci/setup.sh -O /pkg.sh"`);
-    await shell.exec(`pct exec ${proxID} sh -- -c "zsh /pkg.sh`);
+    await shell.exec(`pct exec ${proxID} zsh -- /pkg.sh`);
     await job.updateProgress('Added command logger');
 
     data.proxID = proxID;
